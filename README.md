@@ -1,2 +1,2 @@
-# AOATsetlinMachine
-An attempt to implement AOA algorithm above naive Tsetlin Machine to optimize hyperparameters in C++
+# RSATsetlinMachine
+An attempt to implement RSA algorithm above naive Tsetlin Machine to optimize hyperparameters in C++
