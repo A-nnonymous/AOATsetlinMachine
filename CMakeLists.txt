@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22.1)
 
-project(AOATsetlinMachine)
+project(RSATsetlinMachine)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -10,12 +10,12 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 add_subdirectory(src/tsetlin)
-add_subdirectory(src/AOA)
+add_subdirectory(src/RSA)
 
 include_directories(src/tsetlin)
-include_directories(src/AOA)
+include_directories(src/RSA)
 
 add_executable(xordemo demo/xor.cpp)
 
-target_link_libraries(xordemo tmLib)
+target_link_libraries(xordemo tmLib rsaLib)
 
