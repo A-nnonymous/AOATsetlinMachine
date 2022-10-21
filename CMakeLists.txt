@@ -15,7 +15,10 @@ add_subdirectory(src/RSA)
 include_directories(src/tsetlin)
 include_directories(src/RSA)
 
-add_executable(xordemo demo/xor.cpp)
+add_executable(xordemo  demo/xor.cpp)
+add_executable(rsademo  demo/testRSA.cpp)
 
 target_link_libraries(xordemo tmLib rsaLib)
+target_link_libraries(rsademo tmLib rsaLib)
+
 

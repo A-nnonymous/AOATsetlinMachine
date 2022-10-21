@@ -42,7 +42,6 @@ SOFTWARE.
 
 class TsetlinMachine {
 public:
-
 struct Prediction
 {
     std::vector<int>        digit;
