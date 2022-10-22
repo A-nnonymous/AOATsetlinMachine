@@ -147,10 +147,10 @@ public:
         {
             exploitation();
             exploration();
-            std::cout<<"###Iter "<<_iterCounter<< ", best value is optimized to:" <<_gbProperty.value;
+            std::cout<<"###Iter "<<_iterCounter<< ", best value is optimized to:" <<_gbProperty.value<<std::endl;
         }
         auto result = _gbProperty;
-        std::cout<<"\n\nOptimization completed "<< ", best value is optimized to:" <<result.value;
+        std::cout<<"\n\nOptimization completed "<< ", best value is optimized to:" <<result.value<<std::endl;
         std::cout<<"Best args as below:" << std::endl;
         for (int i = 0; i < _gSearchArgs.dimension; i++)
         {

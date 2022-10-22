@@ -133,7 +133,7 @@ int main(int argc, char const *argv[])
     // Tsetlin Machine common arguments.
     std::mt19937    rng(std::random_device{}());
     int             inputBitNum = 84;
-    int             clausePerOutput = 1000;
+    int             clausePerOutput = 500;
     int             outputBitNum = 4;
     int             epochNum = 100;
     tsetlinArgs     funcArgs(inputBitNum,clausePerOutput,outputBitNum,0.0,0,epochNum,rng);
