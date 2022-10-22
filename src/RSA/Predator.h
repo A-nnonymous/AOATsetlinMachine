@@ -114,9 +114,9 @@ public:
             double dimRange = double(_pSearchArgs.searchRange.maxLimits[dim] 
                                         -_pSearchArgs.searchRange.minLimits[dim]);
 
-            double R = gbest[dim] - (_allPosition[thisChoice][dim]) / (gbest[dim] + __DBL_MIN__);
+            double R = gbest[dim] - (_allPosition[thisChoice][dim]) / (gbest[dim] + __FLT_MIN__);
             double P = _pSearchArgs.alpha + (_allPosition[_mynumber][dim] - mymean) / 
-                    (gbest[dim] * dimRange + __DBL_MIN__);
+                    (gbest[dim] * dimRange + __FLT_MIN__);
             double Eta = gbest[dim] * P;
 
             if(iter <= (_pSearchArgs.maxIter)/4)                // Stage 1
@@ -135,7 +135,7 @@ public:
             }
             else                                                // Stage 4
             {
-                proposal[dim] = gbest[dim] - Eta * __DBL_MIN__ - R * d01(_rng);
+                proposal[dim] = gbest[dim] - Eta * __FLT_MIN__ - R * d01(_rng);
             }
         }
         restrict(proposal);
@@ -156,11 +156,11 @@ public:
         return _property;
     }
 
-    void testPrint()
+    void printArgs()
     {
         for (int i = 0; i < _pSearchArgs.dimension; i++)
         {
-            std::cout<<_allPosition[_mynumber][i]<<std::endl;
+            std::cout<<"\tArg["<<i<<"] "<<_allPosition[_mynumber][i]<<"\n";
         }
         
     }

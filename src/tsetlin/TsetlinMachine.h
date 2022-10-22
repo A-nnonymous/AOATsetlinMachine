@@ -45,7 +45,7 @@ public:
 struct Prediction
 {
     std::vector<int>        digit;
-    std::vector<float>      confidence;
+    std::vector<double>      confidence;
 };
 struct Clause {
         std::vector<int>            _automataStates;    // Using 32bit integer represent states.
@@ -64,9 +64,9 @@ struct Output {
 };
 
 private:
-    const float                 _arg_s;
-    const float                 _sInv;
-    const float                 _sInvConj;
+    const double                 _arg_s;
+    const double                 _sInv;
+    const double                 _sInvConj;
     const int                   _arg_T;
     const int                   _clausePerOutput;
     const int                   _clauseNum;
@@ -90,7 +90,7 @@ public:
     void                    getNegativeClauses(std::vector<TsetlinMachine::Clause> *outsideBuffer);
     
     TsetlinMachine(int numInputs, int clausesPerOutput, int numOutputs,
-                   float s, int T,std::mt19937 &rng);
+                   double s, int T,std::mt19937 &rng);
 };
 
 std::vector<int> hardMax(TsetlinMachine::Prediction p);

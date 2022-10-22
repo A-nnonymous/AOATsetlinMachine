@@ -59,7 +59,7 @@ TsetlinMachine::predict(const std::vector<int> &inputStates)
 
         _outputs[outputIdx]._sum = sum;
         _results.digit[outputIdx] = sum > 0;      // Output 1 or 0 for certain idx.
-        _results.confidence[outputIdx] = sum / (float)_clausePerOutput;
+        _results.confidence[outputIdx] = sum / (double)_clausePerOutput;
     }
 
     return _results;   // return all output array bitwise.
@@ -91,7 +91,7 @@ TsetlinMachine::inclusionUpdate(int outputIdx, int clauseIdx, int automataIdx)
 void 
 TsetlinMachine::feedbackTypeI(int outputIdx, int clauseIdx)
 {
-    std::uniform_real_distribution<float> dist01(0.0f, 1.0f);
+    std::uniform_real_distribution<double> dist01(0.0f, 1.0f);
 
     int clauseState = _outputs[outputIdx]._clauses[clauseIdx]._state;
     for (   int automataIdx = 0; 
@@ -166,15 +166,15 @@ void
 TsetlinMachine::learn(const std::vector<int> &targetOutputStates)
 {
     int                                     T = this->_arg_T;
-    std::uniform_real_distribution<float>   dist01(0.0f, 1.0f);
+    std::uniform_real_distribution<double>   dist01(0.0f, 1.0f);
     
     for (int outputIdx = 0; outputIdx < _outputSize; outputIdx++) 
     {
         int     clampedSum = std::min(T, std::max(-T, _outputs[outputIdx]._sum));
-        float   rescaleFactor = 1.0f / static_cast<float>(2 * T);
+        double   rescaleFactor = 1.0f / static_cast<double>(2 * T);
 
-        float   probFeedBack0 = (T - clampedSum) * rescaleFactor; // The larger the T is, the less biased sum influences
-        float   probFeedBack1 = (T + clampedSum) * rescaleFactor;
+        double   probFeedBack0 = (T - clampedSum) * rescaleFactor; // The larger the T is, the less biased sum influences
+        double   probFeedBack1 = (T + clampedSum) * rescaleFactor;
         
         int     sum = 0;
 
@@ -231,7 +231,7 @@ TsetlinMachine::getNegativeClauses(std::vector<TsetlinMachine::Clause> *result)
 }
 
 TsetlinMachine::TsetlinMachine(int numInputs, int clausesPerOutput, int numOutputs,
-                   float s, int T,std::mt19937 &rng):
+                   double s, int T,std::mt19937 &rng):
         _clausePerOutput(clausesPerOutput),
         _clauseNum( numOutputs * clausesPerOutput),
         _inputSize(numInputs),
@@ -265,7 +265,7 @@ TsetlinMachine::TsetlinMachine(int numInputs, int clausesPerOutput, int numOutpu
 std::vector<int> 
 hardMax(TsetlinMachine::Prediction p)
 {
-    float max_confidence = 0;
+    double max_confidence = 0;
     int max_confidence_idx = 0;
     std::vector<int> result(p.digit.size(),0);
     for(int idx = 0; idx < p.digit.size(); idx++)

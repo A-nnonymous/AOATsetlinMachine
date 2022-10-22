@@ -172,10 +172,9 @@ parse_huesken_scores (std::string path, std::vector<std::vector<int> > &result)
 }
 
 void
-modelOutput (TsetlinMachine tm,
-             std::vector<TsetlinMachine::Clause> bestPositiveClauses,
+modelOutput (std::vector<TsetlinMachine::Clause> bestPositiveClauses,
              std::vector<TsetlinMachine::Clause> bestNegativeClauses,
-             float precision,
+             double precision,
              std::string outputpath)
 {
     int automataPerClause = bestPositiveClauses[0]._automataStates.size ();

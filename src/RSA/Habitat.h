@@ -1,7 +1,11 @@
 #pragma once
 #include "Predator.h"
 
-/// @brief Definition of scheduler in RSA algorithm.
+using std::vector;
+using std::thread;
+
+
+/// @brief Orchestrator of this algorithm.
 /// @tparam output Output struct of fitness function, which must contain fitness value named "value" initialized to (double)-Inf.
 /// @tparam funcArgs Fitness function arguments(trivial or struct) passed from user.
 /// @tparam rangeDtype Data type of search range.
@@ -10,19 +14,24 @@ class Habitat{
 private:
     std::mt19937                        _rng;
     const int                           _predatorNum;
-    const typename Predator<output,
-                    funcArgs,
-                    rangeDtype>::
-                    searchArgs          _gSearchArgs;
-
-    std::vector<Predator
-                <output,
-                funcArgs,
-                rangeDtype>>            _predators;
-    std::vector<
-        std::vector<rangeDtype>>        _allPosition;
     const funcArgs                      _gFuncArgs;
-    std::vector<rangeDtype>             _gbPosition;
+    const typename Predator
+                    <
+                    output,
+                    funcArgs,
+                    rangeDtype
+                    >
+                    ::searchArgs        _gSearchArgs;
+
+    vector<Predator
+                <
+                output,
+                funcArgs,
+                rangeDtype
+                >
+            >                           _predators;
+    vector<vector<rangeDtype>>          _allPosition;
+    vector<rangeDtype>                  _gbPosition;
     output                              _gbProperty;                // output all data returned from best predator.
     output                              (*_funcPtr)(funcArgs);      // Fitness function pointer
     int                                 _iterCounter;
@@ -32,12 +41,12 @@ private:
     void exploitation()
     {
         /////////////////////////// Multithread evaluation////////////////////////////
-        static std::vector<std::thread> threadPool;
+        static vector<thread> threadPool;
         for(auto    thisPredator = _predators.begin();
                     thisPredator != _predators.end();
                     thisPredator ++ )
         {
-            std::thread th(&Predator<output,funcArgs,rangeDtype>::exploit,thisPredator);
+            thread th(&Predator<output,funcArgs,rangeDtype>::exploit,thisPredator);
             threadPool.push_back(move(th));
         }
         for(auto &thread: threadPool)   thread.join();
@@ -68,14 +77,14 @@ private:
     void exploration()
     {
         static std::uniform_real_distribution<double>       evoScaleDist(-2,2);
-        double evoSense = evoScaleDist(_rng)*_iterCounter/_gSearchArgs.maxIter;
+        double evoSense = evoScaleDist(_rng)*_iterCounter/(double)_gSearchArgs.maxIter;
         /////////////////////////// Multithread evaluation////////////////////////////
-        static std::vector<std::thread> threadPool;
+        static vector<thread> threadPool;
         for(auto    thisPredator = _predators.begin();
                     thisPredator != _predators.end();
                     thisPredator ++ )
         {
-            std::thread th(&Predator<output,funcArgs,rangeDtype>::explore,
+            thread th(&Predator<output,funcArgs,rangeDtype>::explore,
                             thisPredator,
                             _gbPosition,
                             evoSense,
@@ -88,15 +97,15 @@ private:
     }
 
 public:
-    /// @brief Constructor of the scheduler in RSA algorithm
+    /// @brief Constructor of hibitat.
     /// @param predatorNum Number of individual optimizer.
     /// @param fitnessFunc Fitness function used to evaluate arguments.
     /// @param gFuncArgs Fitness function related arguments passed from user, must include vector named 'vars' stand for changable parameters.
-    /// @param gSearchArgs RSA related arguments passed from user.
-    Habitat(int                                                     predatorNum,
-            output                                                  (*fitnessFunc)(funcArgs),
-            funcArgs                                                gFuncArgs,
-            Predator<output,funcArgs,rangeDtype>::searchArgs        gSearchArgs)
+    /// @param gSearchArgs Optimizer related arguments passed from user.
+    Habitat(int                                                             predatorNum,
+            output                                                          (*fitnessFunc)(funcArgs),
+            funcArgs                                                        gFuncArgs,
+            typename Predator<output,funcArgs,rangeDtype>::searchArgs       gSearchArgs)
     :
     _predatorNum(predatorNum),
     _gSearchArgs(gSearchArgs),
@@ -106,7 +115,7 @@ public:
         _funcPtr = fitnessFunc;
         _gbProperty = output();       // Initialize output property to default.
         _allPosition.resize(_predatorNum,
-                            std::vector<rangeDtype>(_gSearchArgs.dimension, 0));
+                            vector<rangeDtype>(_gSearchArgs.dimension, 0));
 
         for (int dim = 0; dim < _gSearchArgs.dimension; dim++)
         {
@@ -120,7 +129,7 @@ public:
             }
         }
         
-        // Need to parse searchArgs,funcArgs and funcPtr to pass to predators.
+        // Instantiate all predators, passing i as ID.
         for (int i = 0; i < _predatorNum; i++)
         {
             _predators.push_back(Predator<output,funcArgs,rangeDtype>(  _funcPtr,
@@ -138,17 +147,25 @@ public:
         {
             exploitation();
             exploration();
+            std::cout<<"###Iter "<<_iterCounter<< ", best value is optimized to:" <<_gbProperty.value;
         }
         auto result = _gbProperty;
+        std::cout<<"\n\nOptimization completed "<< ", best value is optimized to:" <<result.value;
+        std::cout<<"Best args as below:" << std::endl;
+        for (int i = 0; i < _gSearchArgs.dimension; i++)
+        {
+            std::cout<<"\tArgs["<< i<<"] = "<< _gbPosition[i]<<std::endl;
+        }
+        
         return result;
     }
 
-    void summonAll()
+    void snapShot()
     {
         for (int i = 0; i < _predatorNum; i++)
         {
-            std::cout<<"##Predator "<<i<<std::endl;
-            _predators[i].testPrint();
+            std::cout<<"\n##Predator "<<i<<"\n";
+            _predators[i].printArgs();
         }
         
     }
