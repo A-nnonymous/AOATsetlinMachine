@@ -25,8 +25,8 @@ struct argAndClauses
         value = valueIn;
         s = sIn;
         T = TIn;
-        bestNegativeClauses = bestNeg;
-        bestPositiveClauses = bestPos;
+        bestNegativeClauses = move(bestNeg);
+        bestPositiveClauses = move(bestPos);
     }
     
 };
@@ -61,10 +61,8 @@ argAndClauses siRNAdemo(tsetlinArgs funcArgs)
     std::mt19937                    rng(std::random_device{}());
     int                             train_data_size = 1229;
     int                             test_data_size = 139;
-    int                             input_features = funcArgs.numInputs;
-    int                             input_bit_per_feature = 4;
     int                             output_size = funcArgs.numOutputs;
-    int                             input_size = input_bit_per_feature * input_features;
+    int                             input_size = funcArgs.numInputs;
     int                             clausePerOutput = funcArgs.clausesPerOutput;
 
     std::vector<std::vector<int>>   train_seqs(train_data_size, std::vector<int>(input_size, 0));
@@ -77,7 +75,6 @@ argAndClauses siRNAdemo(tsetlinArgs funcArgs)
     parse_huesken_scores("/home/data/siRNA/e2s/e2s_test_efficiency.csv", test_scores);
     std::vector<TsetlinMachine::Clause> bestPositiveClauses;
     std::vector<TsetlinMachine::Clause> bestNegativeClauses;
-    std::string outputpath = "/home/output/";
     
 
     TsetlinMachine  tm( input_size,clausePerOutput,output_size,
@@ -133,15 +130,15 @@ int main(int argc, char const *argv[])
     // Tsetlin Machine common arguments.
     std::mt19937    rng(std::random_device{}());
     int             inputBitNum = 84;
-    int             clausePerOutput = 500;
+    int             clausePerOutput = 100;
     int             outputBitNum = 4;
-    int             epochNum = 100;
+    int             epochNum = 1;
     tsetlinArgs     funcArgs(inputBitNum,clausePerOutput,outputBitNum,0.0,0,epochNum,rng);
 
     // RSA algorithm arguments;
-    int             N = 94;     // Number of individual optimizer.
+    int             N = 3;     // Number of individual optimizer.
     int             dimNum = 2;
-    int             maxIter = 100;
+    int             maxIter = 1;
     double          alpha = 0.1;
     double          beta = 0.005;
 
