@@ -10,7 +10,7 @@ class Habitat{
 private:
     std::mt19937                        _rng;
     const int                           _predatorNum;
-    const Predator<output,
+    const typename Predator<output,
                     funcArgs,
                     rangeDtype>::
                     searchArgs          _gSearchArgs;
@@ -49,7 +49,7 @@ private:
                     thisPredator != _predators.end();
                     thisPredator ++ )
         {
-            if(thisPredator.getValue > _gbProperty.value)
+            if(thisPredator->getValue() > _gbProperty.value)
             {
                 candidateIdx = predatorIdx;
                 touched = true;
@@ -59,6 +59,7 @@ private:
         if(touched)
         {
             _gbProperty = _predators[candidateIdx].getProperty();
+            _gbPosition = _allPosition[candidateIdx];
         }
 
         
@@ -90,7 +91,7 @@ public:
     /// @brief Constructor of the scheduler in RSA algorithm
     /// @param predatorNum Number of individual optimizer.
     /// @param fitnessFunc Fitness function used to evaluate arguments.
-    /// @param gFuncArgs Fitness function related arguments passed from user.
+    /// @param gFuncArgs Fitness function related arguments passed from user, must include vector named 'vars' stand for changable parameters.
     /// @param gSearchArgs RSA related arguments passed from user.
     Habitat(int                                                     predatorNum,
             output                                                  (*fitnessFunc)(funcArgs),
@@ -138,8 +139,8 @@ public:
             exploitation();
             exploration();
         }
-        auto a = output();
-        return a;
+        auto result = _gbProperty;
+        return result;
     }
 
     void summonAll()

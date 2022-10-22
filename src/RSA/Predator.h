@@ -84,6 +84,7 @@ public:
         _funcPtr = fitnessFunc;
         _pSearchArgs = gSearchArgs;
         _pFuncArgs = gFuncArgs;
+        _pFuncArgs.vars = _allPosition[mynumber]; // Target for this algorithm, changable arguments vector.
     }
     
     /// @brief Evaluation of fitness function, have side effects on local optima and its property.
@@ -143,13 +144,13 @@ public:
         {
             _allPosition[_mynumber][dim] = proposal[dim];
         }
+        _pFuncArgs.vars = _allPosition[_mynumber]; // Renew the changable vector.
     }
 
     double getValue()
     {
         return _property.value;
     }
-
     output getProperty()
     {
         return _property;
